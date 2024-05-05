@@ -21,9 +21,6 @@ public class AgentGuesser extends Agent {
 
 	public static AID ID = new AID("AgentGuesser", AID.ISLOCALNAME);
 
-	private int nbTrials;
-	public int upperBound;
-	public int lowerBound;
 	public int wordLength;
 	ArrayList<Character> alphabetList = new ArrayList<>(Arrays.asList(
             'e', 't', 'a', 'o', 'i', 'n', 's', 'h', 'r', 'd', 'l', 'c', 'u', 'm',
@@ -61,33 +58,7 @@ public class AgentGuesser extends Agent {
 	 * @return The generated letter.
 	 */
 	public char guess() {
-		nbTrials++;
 		return alphabetList.remove(0);
-	}
-	
-
-	public int getNbTrials() {
-		return nbTrials;
-	}
-
-	public void setNbTrials(int nbTrials) {
-		this.nbTrials = nbTrials;
-	}
-
-	public int getUpperBound() {
-		return upperBound;
-	}
-
-	public void setUpperBound(int upperBound) {
-		this.upperBound = upperBound;
-	}
-
-	public int getLowerBound() {
-		return lowerBound;
-	}
-
-	public void setLowerBound(int lowerBound) {
-		this.lowerBound = lowerBound;
 	}
 	
 	public int getWordLength() {
@@ -97,6 +68,5 @@ public class AgentGuesser extends Agent {
 	public void setWordLength(int wordLength) {
 		this.wordLength = wordLength;
 	}
-
 
 }

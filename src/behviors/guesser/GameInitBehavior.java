@@ -23,10 +23,8 @@ public class GameInitBehavior extends OneShotBehaviour {
 		ACLMessage message = agent.receive();
 		AgentLogger.logACLMessage(message);
 
-		agent.setNbTrials(0);
-
 		if (message != null && message.getContent() != null) {
-			String wordLength = message.getContent();
+			String wordLength = message.getContent().split(": ")[1];
 //			String[] tab = message.getContent().split(";");
 			try {
 //				agent.setLowerBound(Integer.parseInt(tab[0]));

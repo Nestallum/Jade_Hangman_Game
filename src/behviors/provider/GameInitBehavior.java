@@ -30,7 +30,7 @@ public class GameInitBehavior extends OneShotBehaviour {
 		// Send lower and upper bounds to AgentGuesser
 		ACLMessage response = new ACLMessage(ACLMessage.INFORM);
 		//reponse.setContent(agent.getLowerBound() + ";" + agent.getUpperBound());
-		response.setContent(Integer.valueOf(agent.getWordLength()).toString());
+		response.setContent("Secret word length: " + Integer.valueOf(agent.getWordLength()).toString());
 		response.addReceiver(AgentGuesser.ID);
 		agent.send(response);
 

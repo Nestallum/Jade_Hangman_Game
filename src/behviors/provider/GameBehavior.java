@@ -5,16 +5,17 @@ import agents.AgentGuesser;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import tools.AgentLogger;
+import tools.TrialResult;
 
 public class GameBehavior extends OneShotBehaviour {
     private static final long serialVersionUID = 1L;
 
-    int result;
+    int status;
     AgentProvider agent;
 
     public GameBehavior(AgentProvider a) {
         this.agent = a;
-        result = -1;
+        status = -1;
     }
 
     public void action() {
@@ -35,14 +36,19 @@ public class GameBehavior extends OneShotBehaviour {
         	System.out.println("No message received or null content.");
 
         // Response
-        result = ((AgentProvider) agent).checkTrial(letter);
-        ACLMessage response = new ACLMessage(ACLMessage.INFORM);
-        response.setContent(Integer.toString(result));
-        response.addReceiver(AgentGuesser.ID);
-        agent.send(response);
+        TrialResult tr = ((AgentProvider) agent).checkTrial(letter);
+        status = tr.getStatus();
+        if(status != 0) { // Send the result while the game is not over.
+	        String result = tr.toString();
+	        ACLMessage response = new ACLMessage(ACLMessage.INFORM);
+	        response.setContent(result);
+	        response.addReceiver(AgentGuesser.ID);
+	        agent.send(response);
+	        System.out.println(agent.getAID().getLocalName() + ": Attempts left: " + agent.getNbTrials());
+        }
     }
 
     public int onEnd() {
-        return Math.abs(result);
+        return Math.abs(status);
     }
 }

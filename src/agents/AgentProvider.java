@@ -13,6 +13,7 @@ import behviors.provider.GameInitBehavior;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.FSMBehaviour;
+import tools.TrialResult;
 
 public class AgentProvider extends Agent {
 
@@ -25,10 +26,8 @@ public class AgentProvider extends Agent {
 
 	private String secretWord;
 	private int wordLength;
-	private int remainingLetters;
 	private int nbTrials;
-	public int upperBound;
-	public int lowerBound;
+	private String guessProgress;
 	private static final String FILE_PATH = "words.txt";
     private static List<String> words;
     private static final Random random = new Random();
@@ -66,39 +65,49 @@ public class AgentProvider extends Agent {
 	 * Generates the secret word.
 	 * @return The secret word chosen randomly from the list of words.
 	 */
-	public void initsecretWord() {
+	public void initSecretWord() {
 		int index = random.nextInt(words.size());
-		secretWord = words.get(index);
-		remainingLetters = secretWord.length();
+		setSecretWord(words.get(index));
 		setWordLength(secretWord.length());
-		System.out.println(getLocalName() + " : Secret word = " + secretWord + " (not visible by AgentGuesser)");
+		setGuessProgress("_".repeat(secretWord.length()));
+		System.out.println(getLocalName() + " : Secret word: " + secretWord + " (not visible by AgentGuesser)");
+		int distinct_letters = (int) secretWord.chars().distinct().count();
+		setNbTrials(distinct_letters*2);
+		System.out.println(getLocalName() + " : Nb Trials: " + nbTrials);
 	}
 
 	/**
 	 * Compare {@code letter} with the secret word.
 	 * @param letter The letter guessed by the player.
 	 * @return -1 if {@code letter} is not present in the secret word;
-	 * <br> 0 if all letters of the secret word have been guessed;
+	 * <br> 0 if all letters of the secret word have been guessed or no more attempts remaining;
 	 * <br> 1 if {@code letter} is present in the secret word.
 	 */
-	public int checkTrial(char letter) {
-		nbTrials++;
-		if (secretWord.contains(String.valueOf(letter))) {
-			int occurences = (int) secretWord.chars().filter(c -> c == letter).count();
-			remainingLetters -= occurences;
-			if (remainingLetters == 0)
-				return 0;
-			else
-				return 1;
+	public TrialResult checkTrial(char letter) {
+	    nbTrials--;
+	    if (secretWord.contains(String.valueOf(letter))) {
+	        guessProgress = updateProgression(guessProgress, letter);
+	        if (guessProgress.equals(secretWord) || nbTrials == 0)
+	            return new TrialResult(0, guessProgress);
+	        return new TrialResult(1, guessProgress);
+	    }
+	    if (nbTrials == 0)
+	        return new TrialResult(0, guessProgress);
+	    return new TrialResult(-1, guessProgress);
+	}
+	
+	public String updateProgression(String guessProgress, char letter) {
+		StringBuilder updatedProgress = new StringBuilder(guessProgress); 
+		for(int i=0; i < secretWord.length(); i++) {
+			if(secretWord.charAt(i) == letter) {
+				updatedProgress.setCharAt(i, letter);
+			}
 		}
-		return -1;
+		return updatedProgress.toString();
 	}
 
 	public void initGame() {
-		this.setNbTrials(0);
-		this.setUpperBound(100);
-		this.setLowerBound(0);
-		this.initsecretWord();
+		this.initSecretWord();
 	}
 
 	public int getNbTrials() {
@@ -108,21 +117,21 @@ public class AgentProvider extends Agent {
 	public void setNbTrials(int nbTrials) {
 		this.nbTrials = nbTrials;
 	}
-
-	public int getUpperBound() {
-		return upperBound;
+	
+	public String getSecretWord() {
+		return secretWord;
+	}
+	
+	public void setSecretWord(String secretWord) {
+		this.secretWord = secretWord;
+	}
+	
+	public String getGuessProgress() {
+		return guessProgress;
 	}
 
-	public void setUpperBound(int upperBound) {
-		this.upperBound = upperBound;
-	}
-
-	public int getLowerBound() {
-		return lowerBound;
-	}
-
-	public void setLowerBound(int lowerBound) {
-		this.lowerBound = lowerBound;
+	public void setGuessProgress(String guessProgress) {
+		this.guessProgress = guessProgress;
 	}
 
 	public int getWordLength() {
@@ -132,5 +141,4 @@ public class AgentProvider extends Agent {
 	public void setWordLength(int wordLength) {
 		this.wordLength = wordLength;
 	}
-
 }

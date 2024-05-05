@@ -20,9 +20,9 @@ public class StartBehavior extends OneShotBehaviour {
 	
 	@Override
 	public void action() {
-		// Wait for 10 seconds before starting the game
+		// Wait for 2 seconds before starting the game
 		// This could be helpful if you need to sniff agents in the GUI for example. 
-		agent.doWait(10000);
+		agent.doWait(2000);
 		
 		// Send a message to AgentProvider to request to start the game
 		ACLMessage message = new ACLMessage(ACLMessage.REQUEST);

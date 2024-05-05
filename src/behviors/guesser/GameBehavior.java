@@ -14,11 +14,11 @@ public class GameBehavior extends OneShotBehaviour {
 	 */
 	AgentGuesser agent;
 	
-	int result;
+	int status;
 
 	public GameBehavior(AgentGuesser a) {
 		this.agent = a;
-		result = -1;
+		status = -1;
 	}
 
 	public void action() {
@@ -36,11 +36,12 @@ public class GameBehavior extends OneShotBehaviour {
 		AgentLogger.logACLMessage(reponse);
 		if (reponse != null && reponse.getContent() != null) {
 			try {
-				int result = Integer.parseInt(reponse.getContent());
-				if (result == -1) {
-					// faire quelque chose
-				} else if (result == 1) {
-					// faire quelque chose
+				int status = Integer.parseInt(reponse.getContent().split(";")[0]);
+				String progress = reponse.getContent().split(";")[1];
+				if (status == -1) {
+					// continuer
+				} else if (status == 1) {
+					// nouvelle lettre trouvée, mettre à jour le dictionnaire
 				}
 			} catch (Exception e) {
 				System.out.println(agent.getAID().getLocalName() + " : Error");
@@ -56,7 +57,7 @@ public class GameBehavior extends OneShotBehaviour {
 	 * This result of this method will be used in the transitions of the FSMBehaviour defined for AgentProvider.  
 	 */
 	public int onEnd() {
-		return Math.abs(result);
+		return Math.abs(status);
 	}
 
 }
