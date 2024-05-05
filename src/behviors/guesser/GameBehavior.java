@@ -24,16 +24,17 @@ public class GameBehavior extends OneShotBehaviour {
 	public void action() {
 		char proposedLetter = agent.guess();
 		ACLMessage message = new ACLMessage(ACLMessage.PROPOSE);
-		message.setContent(String.valueOf(proposedLetter));
+		message.setContent(Character.toString(proposedLetter));
 		message.addReceiver(AgentProvider.ID);
 		agent.send(message);
 
+		
 		// Wait for AgentProvider's response
 		agent.doWait();
 
 		ACLMessage reponse = agent.receive();
+		AgentLogger.logACLMessage(reponse);
 		if (reponse != null && reponse.getContent() != null) {
-			AgentLogger.logACLMessage(reponse);
 			try {
 				int result = Integer.parseInt(reponse.getContent());
 				if (result == -1) {
@@ -46,7 +47,8 @@ public class GameBehavior extends OneShotBehaviour {
 				agent.doDelete();
 			}
 		}
-
+		else
+			System.out.println("No message received or null content.");
 	}
 
 	/**

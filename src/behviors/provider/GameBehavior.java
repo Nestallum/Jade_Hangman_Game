@@ -1,55 +1,48 @@
 package behviors.provider;
 
 import agents.AgentProvider;
-import jade.core.AID;
+import agents.AgentGuesser;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import tools.AgentLogger;
 
 public class GameBehavior extends OneShotBehaviour {
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * -1 if proposed number is less than secret number.
-	 *  1 if proposed number is bigger than secret number.
-	 *  0 is proposed number is equal to the secret number.
-	 */
-	int result;
+    private static final long serialVersionUID = 1L;
 
-	public GameBehavior(AgentProvider a) {
-		myAgent = a; // or setAgent(a);
-		result = -1;
-	}
+    int result;
+    AgentProvider agent;
 
-	public void action() {
-		// Wait for a trial
-		myAgent.doWait(); // or getAgent().doWait();
-		ACLMessage message = myAgent.receive();
-		AgentLogger.logACLMessage(message);
-		char letter = ' '; 
-		try {
-			letter = message.getContent().charAt(0);
-		} catch (Exception ex) {
-			System.out.println("Error : invalid message");
-			myAgent.doDelete();
-		}
+    public GameBehavior(AgentProvider a) {
+        this.agent = a;
+        result = -1;
+    }
 
-		// Response
-		// checkTrial() method is defined in AgentProvider class, not in Agent. 
-		// So myAgent must be casted to AgentProvider class in order to call this method.
-		result = ((AgentProvider)myAgent).checkTrial(letter);  
- 		ACLMessage reponse = new ACLMessage(ACLMessage.INFORM);
-		reponse.setContent(Integer.toString(result));
-		reponse.addReceiver(new AID("AgentGuesser", AID.ISLOCALNAME));
-		myAgent.send(reponse);
+    public void action() {
+        // Wait for a trial
+        agent.doWait(); // or getAgent().doWait();
+        ACLMessage message = agent.receive();
+        AgentLogger.logACLMessage(message);
+        char letter = ' ';
+        if (message != null && message.getContent() != null) {
+	        try {
+	            letter = message.getContent().charAt(0);
+	        } catch (Exception ex) {
+	            System.out.println("Error : invalid message");
+	            agent.doDelete();
+	        }
+        }
+        else
+        	System.out.println("No message received or null content.");
 
-	}
+        // Response
+        result = ((AgentProvider) agent).checkTrial(letter);
+        ACLMessage response = new ACLMessage(ACLMessage.INFORM);
+        response.setContent(Integer.toString(result));
+        response.addReceiver(AgentGuesser.ID);
+        agent.send(response);
+    }
 
-	/**
-	 * Returns 0 if the proposed letter was the last to find in the secret word, else 1. 
-	 * This result of this method will be used in the transitions of the FSMBehaviour defined for AgentProvider.  
-	 */
-	public int onEnd() {
-		return Math.abs(result);
-	}
+    public int onEnd() {
+        return Math.abs(result);
+    }
 }

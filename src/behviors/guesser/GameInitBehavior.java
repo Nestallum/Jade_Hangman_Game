@@ -18,7 +18,7 @@ public class GameInitBehavior extends OneShotBehaviour {
 	}
 
 	public void action() {
-		// Wait for a message from AgentA containing lower and upper bounds
+		// Wait for a message from AgentProvider containing informations on the word.
 		agent.doWait();
 		ACLMessage message = agent.receive();
 		AgentLogger.logACLMessage(message);

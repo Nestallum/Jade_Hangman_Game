@@ -16,8 +16,6 @@ public class GameEndBehavior extends OneShotBehaviour {
 	}
 
 	public void action() {
-		System.out.println(agent.getAID().getLocalName() 
-				+ " : Game over. Number of trials : " + agent.getNbTrials());
 		agent.doDelete();
 	}
 
