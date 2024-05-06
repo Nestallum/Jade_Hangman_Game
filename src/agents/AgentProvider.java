@@ -29,8 +29,8 @@ public class AgentProvider extends Agent {
 	private int nbTrials;
 	private String guessProgress;
 	private static final String FILE_PATH = "words.txt";
-    private static List<String> words;
     private static final Random random = new Random();
+    private static List<String> words;
     
     // Loading words from text file
     static {
@@ -62,8 +62,7 @@ public class AgentProvider extends Agent {
 	}
 
 	/**
-	 * Generates the secret word.
-	 * @return The secret word chosen randomly from the list of words.
+	 * Generates the secret word and initializes every informations we need.
 	 */
 	public void initSecretWord() {
 		int index = random.nextInt(words.size());
@@ -72,8 +71,8 @@ public class AgentProvider extends Agent {
 		setGuessProgress("_".repeat(secretWord.length()));
 		System.out.println(getLocalName() + " : Secret word: " + secretWord + " (not visible by AgentGuesser)");
 		int distinct_letters = (int) secretWord.chars().distinct().count();
-		setNbTrials(distinct_letters*2);
-		System.out.println(getLocalName() + " : Nb Trials: " + nbTrials);
+		setNbTrials((int)Math.ceil(distinct_letters * 1.5));
+		System.out.println(getLocalName() + " : Number of Trials: " + nbTrials);
 	}
 
 	/**

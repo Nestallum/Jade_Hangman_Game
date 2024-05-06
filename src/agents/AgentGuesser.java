@@ -1,7 +1,13 @@
 package agents;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import behviors.guesser.GameBehavior;
 import behviors.guesser.GameEndBehavior;
@@ -21,12 +27,19 @@ public class AgentGuesser extends Agent {
 
 	public static AID ID = new AID("AgentGuesser", AID.ISLOCALNAME);
 
-	public int wordLength;
+	private String guessProgress;
+	private char lastGuessedLetter;
+	private int status;
+	private int wordLength;
+	private List<String> words; // List of words
+	private List<Character> usedLetters;
+
 	ArrayList<Character> alphabetList = new ArrayList<>(Arrays.asList(
             'e', 't', 'a', 'o', 'i', 'n', 's', 'h', 'r', 'd', 'l', 'c', 'u', 'm',
             'w', 'f', 'g', 'y', 'p', 'b', 'v', 'k', 'j', 'x', 'q', 'z'
         )); // Characters ranked from most to least frequent in the English language
-
+	private static final String FILE_PATH = "words.txt";
+    
 	public void setup() {
 		FSMBehaviour behaviour = new FSMBehaviour(this);
 
@@ -50,6 +63,56 @@ public class AgentGuesser extends Agent {
 
 		addBehaviour(behaviour);
 	}
+	
+	public void preprocessWords() {
+		words = new ArrayList<>();
+		usedLetters = new ArrayList<>();
+		
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+            	if(line.trim().length() == wordLength)
+                	words.add(line.trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public ArrayList<String> filterWords() {
+        ArrayList<String> filteredWords = new ArrayList<>();
+
+        for (String word : words) {
+            if (word.contains(String.valueOf(lastGuessedLetter)))
+            	filteredWords.add(word);
+        }
+        return filteredWords;
+    }
+	
+	public char findMostFrequentLetter(){
+        Map<Character, Integer> letterCount = new HashMap<>();
+
+        // Parcourir chaque mot dans la liste de mots
+        for (String word : words) {
+            // Parcourir chaque lettre dans le mot
+            for (char letter : word.toCharArray()) {
+                // Mettre à jour le compteur pour cette lettre
+            	if(!usedLetters.contains(letter))
+            		letterCount.put(letter, letterCount.getOrDefault(letter, 0) + 1);
+            }
+        }
+
+        // Trouver la lettre avec le compteur le plus élevé
+        char mostFrequentLetter = ' ';
+        int maxCount = 0;
+        for (Map.Entry<Character, Integer> entry : letterCount.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                mostFrequentLetter = entry.getKey();
+                maxCount = entry.getValue();
+            }
+        }
+        return mostFrequentLetter;
+    }
 
 	/**
 	 * Generates a letter from the alphabet list {@link #alphabetList}.
@@ -58,7 +121,14 @@ public class AgentGuesser extends Agent {
 	 * @return The generated letter.
 	 */
 	public char guess() {
-		return alphabetList.remove(0);
+		if(guessProgress.equals("_".repeat(wordLength)))
+			return alphabetList.remove(0);
+		
+		if(status == 1) {
+			words = filterWords();
+		}
+		
+		return findMostFrequentLetter();		
 	}
 	
 	public int getWordLength() {
@@ -67,6 +137,38 @@ public class AgentGuesser extends Agent {
 
 	public void setWordLength(int wordLength) {
 		this.wordLength = wordLength;
+	}
+
+	public String getGuessProgress() {
+		return guessProgress;
+	}
+
+	public void setGuessProgress(String guessProgress) {
+		this.guessProgress = guessProgress;
+	}
+
+	public char getLastGuessedLetter() {
+		return lastGuessedLetter;
+	}
+
+	public void setLastGuessedLetter(char lastGuessedLetter) {
+		this.lastGuessedLetter = lastGuessedLetter;
+	}
+	
+	public List<Character> getUsedLetters() {
+		return usedLetters;
+	}
+
+	public void setUsedLetters(List<Character> usedLetters) {
+		this.usedLetters = usedLetters;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }

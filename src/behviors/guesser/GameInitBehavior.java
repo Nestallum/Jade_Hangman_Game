@@ -30,6 +30,8 @@ public class GameInitBehavior extends OneShotBehaviour {
 //				agent.setLowerBound(Integer.parseInt(tab[0]));
 //				agent.setUpperBound(Integer.parseInt(tab[1]));
 				agent.setWordLength(Integer.parseInt(wordLength));
+				agent.setGuessProgress("_".repeat(agent.getWordLength()));
+				agent.preprocessWords();
 			} catch (Exception ex) {
 				System.out.println(ex.getMessage());
 				agent.doDelete();

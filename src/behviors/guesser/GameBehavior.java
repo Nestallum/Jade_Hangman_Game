@@ -37,11 +37,12 @@ public class GameBehavior extends OneShotBehaviour {
 		if (reponse != null && reponse.getContent() != null) {
 			try {
 				int status = Integer.parseInt(reponse.getContent().split(";")[0]);
-				String progress = reponse.getContent().split(";")[1];
-				if (status == -1) {
-					// continuer
-				} else if (status == 1) {
-					// nouvelle lettre trouvée, mettre à jour le dictionnaire
+				agent.setStatus(status);
+				agent.getUsedLetters().add(proposedLetter);
+				if (status == 1) {
+					String progress = reponse.getContent().split(";")[1];
+					agent.setGuessProgress(progress);
+					agent.setLastGuessedLetter(proposedLetter);
 				}
 			} catch (Exception e) {
 				System.out.println(agent.getAID().getLocalName() + " : Error");
