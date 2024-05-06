@@ -5,6 +5,17 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import tools.AgentLogger;
 
+/**
+ * Behavior class responsible for initializing the game parameters based on the information received from the AgentProvider.
+ *
+ * This behavior waits for a message from the AgentProvider containing information about the word to be guessed.
+ * It extracts the word length from the message content, initializes the game parameters
+ * and preprocesses the word list to prepare for the guessing process.
+ *
+ *
+ * @author Nassim Lattab
+ * @date 2024-05-06
+ */
 public class GameInitBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	
@@ -24,12 +35,9 @@ public class GameInitBehavior extends OneShotBehaviour {
 		AgentLogger.logACLMessage(message);
 
 		if (message != null && message.getContent() != null) {
-			String wordLength = message.getContent().split(": ")[1];
-//			String[] tab = message.getContent().split(";");
+			int wordLength = Integer.parseInt(message.getContent().split(": ")[1]);
 			try {
-//				agent.setLowerBound(Integer.parseInt(tab[0]));
-//				agent.setUpperBound(Integer.parseInt(tab[1]));
-				agent.setWordLength(Integer.parseInt(wordLength));
+				agent.setWordLength(wordLength);
 				agent.setGuessProgress("_".repeat(agent.getWordLength()));
 				agent.preprocessWords();
 			} catch (Exception ex) {

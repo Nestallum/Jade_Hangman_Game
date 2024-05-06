@@ -3,6 +3,17 @@ package behaviors.provider;
 import agents.AgentProvider;
 import jade.core.behaviours.OneShotBehaviour;
 
+/**
+ * Behavior class responsible for ending the game and deleting the AgentProvider.
+ *
+ * This behavior checks if the game has ended either because the word has been found
+ * or because there are no more attempts remaining. It prints appropriate messages
+ * indicating the outcome of the game and deletes the AgentProvider.
+ *
+ *
+ * @author Nassim Lattab
+ * @date 2024-05-06
+ */
 public class GameEndBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	/**

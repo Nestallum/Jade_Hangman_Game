@@ -7,6 +7,15 @@ import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
 
+/**
+ * Launcher class responsible for starting the Jade platform and launching the AgentProvider and AgentGuesser agents.
+ *
+ * This class initializes the Jade platform and creates a main container. It then creates and starts two agents:
+ * AgentProvider, which provides the hidden word to be guessed, and AgentGuesser, which attempts to guess the hidden word.
+ *
+ * @author Nassim Lattab
+ * @date 2024-05-06
+ */
 public class Launcher {
 	public static void main(String[] args) {
 		Runtime runtime = Runtime.instance();

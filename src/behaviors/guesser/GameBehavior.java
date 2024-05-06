@@ -6,6 +6,16 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import tools.AgentLogger;
 
+/**
+ * Behavior class responsible for managing the guessing process and communication with the AgentProvider.
+ *
+ * This behavior performs the guessing action by sending a proposed letter to the AgentProvider,
+ * waiting for its response, and processing the response to update the game status and guess progress.
+ *
+ *
+ * @author Nassim Lattab
+ * @date 2024-05-06
+ */
 public class GameBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	

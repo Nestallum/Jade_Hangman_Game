@@ -17,6 +17,14 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.FSMBehaviour;
 
+/**
+ * AgentGuesser class responsible for guessing the hidden word provided by the AgentProvider.
+ *
+ * This agent attempts to guess the hidden word provided by the AgentProvider in the Hangman game.
+ *
+ * @author Nassim Lattab
+ * @date 2024-05-06
+ */
 public class AgentGuesser extends Agent {
 
 	private static final long serialVersionUID = 1L;

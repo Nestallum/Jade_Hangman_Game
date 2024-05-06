@@ -5,6 +5,16 @@ import agents.AgentGuesser;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 
+/**
+ * Behavior class responsible for initiating the game by sending a request message to the AgentProvider.
+ *
+ * This behavior waits for a short delay before sending a request message to the AgentProvider to start the game.
+ * It provides a brief pause before the game begins, which can be helpful for various purposes such as GUI interaction.
+ *
+ *
+ * @author Nassim Lattab
+ * @date 2024-05-06
+ */
 public class StartBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	

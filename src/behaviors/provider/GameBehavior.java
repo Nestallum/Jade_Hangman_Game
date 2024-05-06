@@ -7,6 +7,16 @@ import jade.lang.acl.ACLMessage;
 import tools.AgentLogger;
 import tools.TrialResult;
 
+/**
+ * Behavior class responsible for managing the game flow and communication with the AgentGuesser.
+ *
+ * This behavior waits for a trial message from the AgentGuesser, processes the guess, and sends the result back.
+ * It also handles the end of the game by checking if the game is over and sending appropriate messages.
+ *
+ *
+ * @author Nassim Lattab
+ * @date 2024-05-06
+ */
 public class GameBehavior extends OneShotBehaviour {
     private static final long serialVersionUID = 1L;
 
