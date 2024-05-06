@@ -1,4 +1,4 @@
-package behviors.provider;
+package behaviors.provider;
 
 import agents.AgentProvider;
 import agents.AgentGuesser;

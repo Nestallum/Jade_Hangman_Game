@@ -1,4 +1,4 @@
-package behviors.guesser;
+package behaviors.guesser;
 
 import agents.AgentProvider;
 import agents.AgentGuesser;
@@ -10,7 +10,7 @@ public class GameBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link behviors.provider.GameBehavior}.
+	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link behaviors.provider.GameBehavior}.
 	 */
 	AgentGuesser agent;
 	
@@ -22,12 +22,11 @@ public class GameBehavior extends OneShotBehaviour {
 	}
 
 	public void action() {
-		char proposedLetter = agent.guess();
+		String guess = agent.guess();
 		ACLMessage message = new ACLMessage(ACLMessage.PROPOSE);
-		message.setContent(Character.toString(proposedLetter));
+		message.setContent(guess);
 		message.addReceiver(AgentProvider.ID);
 		agent.send(message);
-
 		
 		// Wait for AgentProvider's response
 		agent.doWait();
@@ -38,11 +37,12 @@ public class GameBehavior extends OneShotBehaviour {
 			try {
 				int status = Integer.parseInt(reponse.getContent().split(";")[0]);
 				agent.setStatus(status);
-				agent.getUsedLetters().add(proposedLetter);
+				char letter = guess.charAt(0);
+				agent.getUsedLetters().add(letter);
 				if (status == 1) {
 					String progress = reponse.getContent().split(";")[1];
 					agent.setGuessProgress(progress);
-					agent.setLastGuessedLetter(proposedLetter);
+					agent.setLastGuessedLetter(letter);
 				}
 			} catch (Exception e) {
 				System.out.println(agent.getAID().getLocalName() + " : Error");

@@ -1,4 +1,4 @@
-package behviors.provider;
+package behaviors.provider;
 
 import agents.AgentProvider;
 import agents.AgentGuesser;
@@ -23,10 +23,10 @@ public class GameBehavior extends OneShotBehaviour {
         agent.doWait(); // or getAgent().doWait();
         ACLMessage message = agent.receive();
         AgentLogger.logACLMessage(message);
-        char letter = ' ';
+        String guess = "";
         if (message != null && message.getContent() != null) {
 	        try {
-	            letter = message.getContent().charAt(0);
+	            guess = message.getContent();           	
 	        } catch (Exception ex) {
 	            System.out.println("Error : invalid message");
 	            agent.doDelete();
@@ -36,7 +36,7 @@ public class GameBehavior extends OneShotBehaviour {
         	System.out.println("No message received or null content.");
 
         // Response
-        TrialResult tr = ((AgentProvider) agent).checkTrial(letter);
+        TrialResult tr = ((AgentProvider) agent).checkTrial(guess);
         status = tr.getStatus();
         if(status != 0) { // Send the result while the game is not over.
 	        String result = tr.toString();

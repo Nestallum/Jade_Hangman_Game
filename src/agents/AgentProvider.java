@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import behviors.provider.GameBehavior;
-import behviors.provider.GameEndBehavior;
-import behviors.provider.GameInitBehavior;
+import behaviors.provider.GameBehavior;
+import behaviors.provider.GameEndBehavior;
+import behaviors.provider.GameInitBehavior;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.FSMBehaviour;
@@ -62,42 +62,68 @@ public class AgentProvider extends Agent {
 	}
 
 	/**
-	 * Generates the secret word and initializes every informations we need.
+	 * Generates the secret word for the Hangman game and initializes game-related information.
 	 */
-	public void initSecretWord() {
+	public void initGame() {
 		int index = random.nextInt(words.size());
 		setSecretWord(words.get(index));
 		setWordLength(secretWord.length());
 		setGuessProgress("_".repeat(secretWord.length()));
 		System.out.println(getLocalName() + " : Secret word: " + secretWord + " (not visible by AgentGuesser)");
 		int distinct_letters = (int) secretWord.chars().distinct().count();
-		setNbTrials((int)Math.ceil(distinct_letters * 1.5));
+		setNbTrials((int) (Math.ceil(distinct_letters*1.5)));
 		System.out.println(getLocalName() + " : Number of Trials: " + nbTrials);
 	}
 
 	/**
-	 * Compare {@code letter} with the secret word.
-	 * @param letter The letter guessed by the player.
-	 * @return -1 if {@code letter} is not present in the secret word;
-	 * <br> 0 if all letters of the secret word have been guessed or no more attempts remaining;
-	 * <br> 1 if {@code letter} is present in the secret word.
+	 * Compares the guessed letter or word with the secret word.
+	 *
+	 * @param guess The letter or word guessed by the player.
+	 * @return A TrialResult object containing the result of the trial (status, guessProgress):
+	 *         status : 1 if the guessed letter is present in the secret word.
+	 *         status : -1 if the guessed letter is not present in the secret word;
+	 *         status : 0 if all letters of the secret word have been guessed or no more attempts remaining;
 	 */
-	public TrialResult checkTrial(char letter) {
+	public TrialResult checkTrial(String guess) {
+		// Guesser sent a word
+		if(guess.length() > 1 && guess.equals(secretWord)) {
+			setGuessProgress(guess);
+			return new TrialResult(0, guessProgress);
+		}
+		
+		// Else, it's a letter
+		char letter = guess.charAt(0);
 	    nbTrials--;
+	    
+	    // Check if the secret word contains the guessed letter
 	    if (secretWord.contains(String.valueOf(letter))) {
 	        guessProgress = updateProgression(guessProgress, letter);
+	        // Check if all letters of the secret word have been guessed or no more attempts remaining
 	        if (guessProgress.equals(secretWord) || nbTrials == 0)
 	            return new TrialResult(0, guessProgress);
-	        return new TrialResult(1, guessProgress);
+	        return new TrialResult(1, guessProgress); // Guessed letter is present in the secret word
 	    }
-	    if (nbTrials == 0)
-	        return new TrialResult(0, guessProgress);
+	    
+	    // No more attempts remaining
+	    if(nbTrials == 0)
+	    	return new TrialResult(0, guessProgress);
+	    
+	    // Guessed letter is not present in the secret word
 	    return new TrialResult(-1, guessProgress);
 	}
 	
+	/**
+	 * Updates the progression of the guessed word based on the letter guessed.
+	 *
+	 * @param guessProgress The current progression of the guessed word.
+	 * @param letter The letter guessed by the player.
+	 * @return The updated progression of the guessed word.
+	 */
 	public String updateProgression(String guessProgress, char letter) {
 		StringBuilder updatedProgress = new StringBuilder(guessProgress); 
 		for(int i=0; i < secretWord.length(); i++) {
+			// If the letter at index i in the secret word matches the guessed letter,
+	        // update the corresponding position in the guessProgress with the guessed letter
 			if(secretWord.charAt(i) == letter) {
 				updatedProgress.setCharAt(i, letter);
 			}
@@ -105,10 +131,8 @@ public class AgentProvider extends Agent {
 		return updatedProgress.toString();
 	}
 
-	public void initGame() {
-		this.initSecretWord();
-	}
-
+	
+	// Getters, Setters
 	public int getNbTrials() {
 		return nbTrials;
 	}

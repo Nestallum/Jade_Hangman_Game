@@ -1,4 +1,4 @@
-package behviors.guesser;
+package behaviors.guesser;
 
 import agents.AgentProvider;
 import agents.AgentGuesser;
@@ -9,7 +9,7 @@ public class StartBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link behviors.provider.GameBehavior}.
+	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link behaviors.provider.GameBehavior}.
 	 */
 	AgentGuesser agent;
 	
