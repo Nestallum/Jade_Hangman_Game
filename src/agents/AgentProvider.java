@@ -93,7 +93,7 @@ public class AgentProvider extends Agent {
 	 *         status : 0 if all letters of the secret word have been guessed or no more attempts remaining;
 	 */
 	public TrialResult checkTrial(String guess) {
-		// Guesser sent a word
+		// If Guesser sent a word
 		if(guess.length() > 1 && guess.equals(secretWord)) {
 			setGuessProgress(guess);
 			return new TrialResult(0, guessProgress);

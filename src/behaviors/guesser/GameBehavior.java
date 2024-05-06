@@ -50,7 +50,7 @@ public class GameBehavior extends OneShotBehaviour {
 				char letter = guess.charAt(0);
 				agent.getUsedLetters().add(letter);
 				
-				// If the guessed letter was in the word, update the guess progress and the last guessed letter
+				// If the guessed letter was in the word, update the guess progress
 				if (status == 1) {
 					String progress = response.getContent().split(";")[1];
 					agent.setGuessProgress(progress);
