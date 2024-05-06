@@ -17,10 +17,7 @@ import jade.lang.acl.ACLMessage;
  */
 public class StartBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link behaviors.provider.GameBehavior}.
-	 */
+
 	AgentGuesser agent;
 	
 	public StartBehavior(AgentGuesser a){
@@ -31,7 +28,7 @@ public class StartBehavior extends OneShotBehaviour {
 	@Override
 	public void action() {
 		// Wait for 2 seconds before starting the game
-		// This could be helpful if you need to sniff agents in the GUI for example. 
+		// This could be helpful if we need to sniff agents in the GUI for example. 
 		agent.doWait(2000);
 		
 		// Send a message to AgentProvider to request to start the game

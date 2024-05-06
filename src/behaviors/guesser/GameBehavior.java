@@ -19,9 +19,6 @@ import tools.AgentLogger;
 public class GameBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link behaviors.provider.GameBehavior}.
-	 */
 	AgentGuesser agent;
 	
 	int status;
@@ -32,6 +29,7 @@ public class GameBehavior extends OneShotBehaviour {
 	}
 
 	public void action() {
+		// Send the guess to the AgentProvider 
 		String guess = agent.guess();
 		ACLMessage message = new ACLMessage(ACLMessage.PROPOSE);
 		message.setContent(guess);
@@ -41,18 +39,21 @@ public class GameBehavior extends OneShotBehaviour {
 		// Wait for AgentProvider's response
 		agent.doWait();
 
-		ACLMessage reponse = agent.receive();
-		AgentLogger.logACLMessage(reponse);
-		if (reponse != null && reponse.getContent() != null) {
+		// Handle response
+		ACLMessage response = agent.receive();
+		AgentLogger.logACLMessage(response);
+		if (response != null && response.getContent() != null) {
 			try {
-				int status = Integer.parseInt(reponse.getContent().split(";")[0]);
+				int status = Integer.parseInt(response.getContent().split(";")[0]);
 				agent.setStatus(status);
+				
 				char letter = guess.charAt(0);
 				agent.getUsedLetters().add(letter);
+				
+				// If the guessed letter was in the word, update the guess progress and the last guessed letter
 				if (status == 1) {
-					String progress = reponse.getContent().split(";")[1];
+					String progress = response.getContent().split(";")[1];
 					agent.setGuessProgress(progress);
-					agent.setLastGuessedLetter(letter);
 				}
 			} catch (Exception e) {
 				System.out.println(agent.getAID().getLocalName() + " : Error");
@@ -64,8 +65,8 @@ public class GameBehavior extends OneShotBehaviour {
 	}
 
 	/**
-	 * Returns 0 if the proposed letter was the last to find in the secret word, else 1. 
-	 * This result of this method will be used in the transitions of the FSMBehaviour defined for AgentProvider.  
+	 * Returns 0 if all letters have been found or the word itself, otherwise 1.
+	 * The result of this method will be used in the transitions of the FSMBehaviour.  
 	 */
 	public int onEnd() {
 		return Math.abs(status);

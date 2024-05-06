@@ -26,9 +26,9 @@ import tools.TrialResult;
 public class AgentProvider extends Agent {
 
 	private static final long serialVersionUID = 1L;
-	private static final String END_BEHAVIOR = "END";
 	private static final String INIT_BEHAVIOR = "INIT";
 	private static final String GAME_BEHAVIOR = "GAME";
+	private static final String END_BEHAVIOR = "END";
 
 	public static AID ID = new AID("AgentProvider", AID.ISLOCALNAME);
 

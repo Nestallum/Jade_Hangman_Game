@@ -30,9 +30,12 @@ public class GameBehavior extends OneShotBehaviour {
 
     public void action() {
         // Wait for a trial
-        agent.doWait(); // or getAgent().doWait();
+        agent.doWait();
+        
         ACLMessage message = agent.receive();
         AgentLogger.logACLMessage(message);
+        
+        // Get guess message for the agent Guesser
         String guess = "";
         if (message != null && message.getContent() != null) {
 	        try {
@@ -48,7 +51,7 @@ public class GameBehavior extends OneShotBehaviour {
         // Response
         TrialResult tr = ((AgentProvider) agent).checkTrial(guess);
         status = tr.getStatus();
-        if(status != 0) { // Send the result while the game is not over.
+        if(status != 0) { // Send the result while the game is not over
 	        String result = tr.toString();
 	        ACLMessage response = new ACLMessage(ACLMessage.INFORM);
 	        response.setContent(result);
@@ -58,6 +61,9 @@ public class GameBehavior extends OneShotBehaviour {
         }
     }
 
+    /**
+	 * Returns 0 if all letters have been found or the word itself, otherwise 1.
+	 */
     public int onEnd() {
         return Math.abs(status);
     }

@@ -19,9 +19,6 @@ import tools.AgentLogger;
 public class GameInitBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link behaviors.provider.GameBehavior}.
-	 */
 	AgentGuesser agent;
 
 	public GameInitBehavior(AgentGuesser a) {
@@ -31,12 +28,14 @@ public class GameInitBehavior extends OneShotBehaviour {
 	public void action() {
 		// Wait for a message from AgentProvider containing informations on the word.
 		agent.doWait();
+		
 		ACLMessage message = agent.receive();
 		AgentLogger.logACLMessage(message);
 
 		if (message != null && message.getContent() != null) {
 			int wordLength = Integer.parseInt(message.getContent().split(": ")[1]);
 			try {
+				// Initializes game parameters for agent Guesser and preprocesses the word list
 				agent.setWordLength(wordLength);
 				agent.setGuessProgress("_".repeat(agent.getWordLength()));
 				agent.preprocessWords();

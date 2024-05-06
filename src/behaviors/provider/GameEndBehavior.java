@@ -16,9 +16,7 @@ import jade.core.behaviours.OneShotBehaviour;
  */
 public class GameEndBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
-	/**
-	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link GameBehavior}.
-	 */
+
 	AgentProvider agent;
 
 	public GameEndBehavior(AgentProvider a) {
@@ -26,9 +24,11 @@ public class GameEndBehavior extends OneShotBehaviour {
 	}
 
 	public void action() {
+		// Agent Guesser found the word
 		if(agent.getGuessProgress().equals(agent.getSecretWord()))
 			System.out.println(agent.getAID().getLocalName() 
 					+ ": Word '" + agent.getSecretWord() + "' found!");
+		// No more trials
 		else if(agent.getNbTrials() == 0)
 			System.out.println(agent.getAID().getLocalName() 
 				+ " : Game over! No more attempts remaining.");

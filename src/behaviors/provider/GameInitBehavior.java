@@ -20,9 +20,6 @@ import tools.AgentLogger;
 public class GameInitBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link GameBehavior}.
-	 */
 	AgentProvider agent;
 
 	public GameInitBehavior(AgentProvider a) {
@@ -35,12 +32,11 @@ public class GameInitBehavior extends OneShotBehaviour {
 		ACLMessage message = agent.receive();
 		AgentLogger.logACLMessage(message);
 
-		// Initialize game parameters (secret word, number of trials...)
+		// Initialize game parameters for agent Provider
 		agent.initGame();
 
-		// Send lower and upper bounds to AgentGuesser
+		// Send the secret word length to AgentGuesser
 		ACLMessage response = new ACLMessage(ACLMessage.INFORM);
-		//reponse.setContent(agent.getLowerBound() + ";" + agent.getUpperBound());
 		response.setContent("Secret word length: " + Integer.valueOf(agent.getWordLength()).toString());
 		response.addReceiver(AgentGuesser.ID);
 		agent.send(response);

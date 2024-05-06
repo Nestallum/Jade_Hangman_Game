@@ -15,9 +15,6 @@ import jade.core.behaviours.OneShotBehaviour;
 public class GameEndBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * We could use Behaviour.myAgent field instead of 'agent'. See {@link behaviors.provider.GameBehavior}.
-	 */
 	AgentGuesser agent;
 
 	public GameEndBehavior(AgentGuesser a) {

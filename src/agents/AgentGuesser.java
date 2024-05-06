@@ -28,15 +28,14 @@ import jade.core.behaviours.FSMBehaviour;
 public class AgentGuesser extends Agent {
 
 	private static final long serialVersionUID = 1L;
-	private static final String END_BEHAVIOR = "END";
-	private static final String GAME_BEHAVIOR = "GAME";
-	private static final String INIT_BEHAVIOR = "INIT";
 	private static final String START_BEHAVIOR = "START";
+	private static final String INIT_BEHAVIOR = "INIT";
+	private static final String GAME_BEHAVIOR = "GAME";
+	private static final String END_BEHAVIOR = "END";
 
 	public static AID ID = new AID("AgentGuesser", AID.ISLOCALNAME);
 
 	private String guessProgress;
-	private char lastGuessedLetter;
 	private int status;
 	private int wordLength;
 	private List<String> words; // List of words
@@ -185,14 +184,6 @@ public class AgentGuesser extends Agent {
 
 	public void setGuessProgress(String guessProgress) {
 		this.guessProgress = guessProgress;
-	}
-
-	public char getLastGuessedLetter() {
-		return lastGuessedLetter;
-	}
-
-	public void setLastGuessedLetter(char lastGuessedLetter) {
-		this.lastGuessedLetter = lastGuessedLetter;
 	}
 	
 	public List<Character> getUsedLetters() {
