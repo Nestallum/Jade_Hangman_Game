@@ -51,14 +51,13 @@ public class GameBehavior extends OneShotBehaviour {
         // Response
         TrialResult tr = ((AgentProvider) agent).checkTrial(guess);
         status = tr.getStatus();
-        if(status != 0) { // Send the result while the game is not over
-	        String result = tr.toString();
-	        ACLMessage response = new ACLMessage(ACLMessage.INFORM);
-	        response.setContent(result);
-	        response.addReceiver(AgentGuesser.ID);
-	        agent.send(response);
-	        System.out.println(agent.getAID().getLocalName() + ": Attempts left: " + agent.getNbTrials());
-        }
+        String result = tr.toString();
+        ACLMessage response = new ACLMessage(ACLMessage.INFORM);
+        response.setContent(result);
+        response.addReceiver(AgentGuesser.ID);
+        agent.send(response);
+        if(status != 0) // Print remaining trials if the game is still running
+        	System.out.println(agent.getAID().getLocalName() + ": Attempts left: " + agent.getNbTrials());
     }
 
     /**

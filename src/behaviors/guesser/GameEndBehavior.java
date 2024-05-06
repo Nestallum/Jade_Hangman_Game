@@ -22,6 +22,7 @@ public class GameEndBehavior extends OneShotBehaviour {
 	}
 
 	public void action() {
+		System.out.println(agent.getAID().getLocalName() + ": Agent Deletion.");
 		agent.doDelete();
 	}
 

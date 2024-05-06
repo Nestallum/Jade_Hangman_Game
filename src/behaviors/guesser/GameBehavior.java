@@ -19,9 +19,8 @@ import tools.AgentLogger;
 public class GameBehavior extends OneShotBehaviour {
 	private static final long serialVersionUID = 1L;
 	
-	AgentGuesser agent;
-	
 	int status;
+	AgentGuesser agent;
 
 	public GameBehavior(AgentGuesser a) {
 		this.agent = a;
@@ -42,18 +41,22 @@ public class GameBehavior extends OneShotBehaviour {
 		// Handle response
 		ACLMessage response = agent.receive();
 		AgentLogger.logACLMessage(response);
+		
 		if (response != null && response.getContent() != null) {
 			try {
-				int status = Integer.parseInt(response.getContent().split(";")[0]);
+				status = Integer.parseInt(response.getContent().split(";")[0]);
 				agent.setStatus(status);
 				
-				char letter = guess.charAt(0);
-				agent.getUsedLetters().add(letter);
-				
-				// If the guessed letter was in the word, update the guess progress
-				if (status == 1) {
-					String progress = response.getContent().split(";")[1];
-					agent.setGuessProgress(progress);
+				if(status != 0) { // If the game is still running.
+					
+					char letter = guess.charAt(0);
+					agent.getUsedLetters().add(letter);
+					
+					// If the guessed letter was in the word, update the guess progress
+					if (status == 1) {
+						String progress = response.getContent().split(";")[1];
+						agent.setGuessProgress(progress);
+					}
 				}
 			} catch (Exception e) {
 				System.out.println(agent.getAID().getLocalName() + " : Error");

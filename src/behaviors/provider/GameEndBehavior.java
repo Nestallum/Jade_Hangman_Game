@@ -23,15 +23,15 @@ public class GameEndBehavior extends OneShotBehaviour {
 		this.agent = a;
 	}
 
-	public void action() {
+	public void action() {		
 		// Agent Guesser found the word
 		if(agent.getGuessProgress().equals(agent.getSecretWord()))
 			System.out.println(agent.getAID().getLocalName() 
-					+ ": Word '" + agent.getSecretWord() + "' found!");
+					+ ": Word '" + agent.getSecretWord() + "' found! Agent Deletion.");
 		// No more trials
 		else if(agent.getNbTrials() == 0)
 			System.out.println(agent.getAID().getLocalName() 
-				+ " : Game over! No more attempts remaining.");
+				+ " : Game over! No more attempts remaining. Agent Deletion.");
 		agent.doDelete();
 	}
 }
