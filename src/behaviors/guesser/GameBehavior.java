@@ -40,6 +40,7 @@ public class GameBehavior extends OneShotBehaviour {
 
 		// Handle response
 		ACLMessage response = agent.receive();
+		agent.doWait(1000);
 		AgentLogger.logACLMessage(response);
 		
 		if (response != null && response.getContent() != null) {

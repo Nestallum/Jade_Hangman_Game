@@ -33,6 +33,7 @@ public class GameBehavior extends OneShotBehaviour {
         agent.doWait();
         
         ACLMessage message = agent.receive();
+        agent.doWait(1000);
         AgentLogger.logACLMessage(message);
         
         // Get guess message for the agent Guesser
