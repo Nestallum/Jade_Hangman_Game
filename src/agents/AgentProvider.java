@@ -36,13 +36,14 @@ public class AgentProvider extends Agent {
 	private int wordLength;
 	private int nbTrials;
 	private String guessProgress;
-	private static final String FILE_PATH = "words.txt";
+	private static final String FILE_PATH = "20k_words.txt";
     private static final Random random = new Random();
     private static List<String> words;
     
     // Loading words from text file
     static {
     	words = new ArrayList<>();
+    	
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -79,7 +80,7 @@ public class AgentProvider extends Agent {
 		setGuessProgress("_".repeat(secretWord.length()));
 		System.out.println(getLocalName() + " : Secret word: " + secretWord + " (not visible by AgentGuesser)");
 		int distinct_letters = (int) secretWord.chars().distinct().count();
-		setNbTrials((int) (Math.ceil(distinct_letters*1.5)));
+		setNbTrials((int) (Math.ceil(distinct_letters*1.2)));
 		System.out.println(getLocalName() + " : Number of Trials: " + nbTrials);
 	}
 

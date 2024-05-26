@@ -58,7 +58,7 @@ public class GameBehavior extends OneShotBehaviour {
         response.addReceiver(AgentGuesser.ID);
         agent.send(response);
         if(status != 0) // Print remaining trials if the game is still running
-        	System.out.println(agent.getAID().getLocalName() + ": Attempts left: " + agent.getNbTrials());
+        	System.out.println("Attempts left: " + agent.getNbTrials());
     }
 
     /**

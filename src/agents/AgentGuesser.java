@@ -40,11 +40,12 @@ public class AgentGuesser extends Agent {
 	private int wordLength;
 	private List<String> words; // List of words
 	private List<Character> usedLetters;
+	private char wrongLetter;
 	ArrayList<Character> alphabetList = new ArrayList<>(Arrays.asList(
             'e', 't', 'a', 'o', 'i', 'n', 's', 'h', 'r', 'd', 'l', 'c', 'u', 'm',
             'w', 'f', 'g', 'y', 'p', 'b', 'v', 'k', 'j', 'x', 'q', 'z'
         )); // Characters ranked from most to least frequent in the English language
-	private static final String FILE_PATH = "words.txt";
+	private static final String FILE_PATH = "20k_words.txt";
     
 	public void setup() {
 		FSMBehaviour behaviour = new FSMBehaviour(this);
@@ -98,17 +99,19 @@ public class AgentGuesser extends Agent {
 
         // Adds a word only if its structure matches that of guessProgress.
         for (String word : words) {
-        	boolean isMatch = true;
-            for (int i = 0; i < guessProgress.length(); i++) {
-                char guessedLetter = guessProgress.charAt(i);
-                char wordLetter = word.charAt(i);
-                if (guessedLetter != '_' && guessedLetter != wordLetter) {
-                    isMatch = false;
-                    break;
-                }
-            }
-            if (isMatch)
-            	filteredWords.add(word);
+    		if(!word.contains(String.valueOf(wrongLetter))) {
+	        	boolean isMatch = true;
+	            for (int i = 0; i < guessProgress.length(); i++) {
+	                char guessedLetter = guessProgress.charAt(i);
+	                char wordLetter = word.charAt(i);
+	                if (guessedLetter != '_' && guessedLetter != wordLetter) {
+	                    isMatch = false;
+	                    break;
+	                }
+	            }
+	            if (isMatch)
+	            	filteredWords.add(word);
+        	}
         }
         return filteredWords;
     }
@@ -152,18 +155,20 @@ public class AgentGuesser extends Agent {
 		
 		// If no letters have been guessed yet, we cannot filter words,
 	    // so we simply choose the next most frequent letter in the English language.
-		if(guessProgress.equals("_".repeat(wordLength)))
+		if(guessProgress.equals("_".repeat(wordLength))) {
+			System.out.println("Compatible word(s): all the words in the list.");
 			return String.valueOf(alphabetList.remove(0));
+		}
 		
-		// If a letter has been guessed and the game is in progress,
-	    // filter the words based on the last guessed letter.
-		if(status == 1) {
-			words = filterWords(); // filter only if a new letter is find.
-			System.out.println("Compatible word(s): " + words);
-			// If the word list is sufficiently filtered, return the only possible word.
+		// filter the words based on the last guessed letter.
+		words = filterWords(); // filter based on the new letter find or the new wrong letter.
+		System.out.println("Compatible word(s): " + words);
+				
+		// If a letter has been guessed and the game is in progress
+		// and the word list is sufficiently filtered, return the only possible word.
+		if(status == 1 && words.size() == 1)
 			if(words.size() == 1)
 				return words.get(0);
-		}
 		
 		// Return the most frequent letter among the ones we have never picked.
 		return String.valueOf(findMostFrequentLetter());
@@ -192,6 +197,14 @@ public class AgentGuesser extends Agent {
 
 	public void setUsedLetters(List<Character> usedLetters) {
 		this.usedLetters = usedLetters;
+	}
+	
+	public char getWrongLetter() {
+		return wrongLetter;
+	}
+
+	public void setWrongLetter(char wrongLetter) {
+		this.wrongLetter = wrongLetter;
 	}
 
 	public int getStatus() {

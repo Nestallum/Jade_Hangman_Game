@@ -58,6 +58,8 @@ public class GameBehavior extends OneShotBehaviour {
 						String progress = response.getContent().split(";")[1];
 						agent.setGuessProgress(progress);
 					}
+					else if(status == -1)
+						agent.setWrongLetter(letter);
 				}
 			} catch (Exception e) {
 				System.out.println(agent.getAID().getLocalName() + " : Error");
