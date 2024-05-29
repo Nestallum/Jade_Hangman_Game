@@ -26,19 +26,20 @@ public class GameInitBehavior extends OneShotBehaviour {
 	}
 
 	public void action() {
+		
 		// Wait for a message from AgentProvider containing informations on the word.
 		agent.doWait();
 		
-		ACLMessage message = agent.receive();
+		ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+		message = agent.receive();
 		AgentLogger.logACLMessage(message);
 
 		if (message != null && message.getContent() != null) {
 			int wordLength = Integer.parseInt(message.getContent().split(": ")[1]);
 			try {
 				// Initializes game parameters for agent Guesser and preprocesses the word list
-				agent.setWordLength(wordLength);
-				agent.setGuessProgress("_".repeat(agent.getWordLength()));
-				agent.preprocessWords();
+				agent.initGuesserVariables(wordLength);
+				
 			} catch (Exception ex) {
 				System.out.println(ex.getMessage());
 				agent.doDelete();

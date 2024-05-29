@@ -12,7 +12,6 @@ import java.util.Map;
 import behaviors.guesser.GameBehavior;
 import behaviors.guesser.GameEndBehavior;
 import behaviors.guesser.GameInitBehavior;
-import behaviors.guesser.StartBehavior;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.FSMBehaviour;
@@ -28,7 +27,6 @@ import jade.core.behaviours.FSMBehaviour;
 public class AgentGuesser extends Agent {
 
 	private static final long serialVersionUID = 1L;
-	private static final String START_BEHAVIOR = "START";
 	private static final String INIT_BEHAVIOR = "INIT";
 	private static final String GAME_BEHAVIOR = "GAME";
 	private static final String END_BEHAVIOR = "END";
@@ -38,7 +36,7 @@ public class AgentGuesser extends Agent {
 	private String guessProgress;
 	private int status;
 	private int wordLength;
-	private List<String> words; // List of words
+	private List<String> dictionary; // List of words
 	private List<Character> usedLetters;
 	private char wrongLetter;
 	ArrayList<Character> alphabetList = new ArrayList<>(Arrays.asList(
@@ -51,14 +49,11 @@ public class AgentGuesser extends Agent {
 		FSMBehaviour behaviour = new FSMBehaviour(this);
 
 		// States
-		behaviour.registerFirstState(new StartBehavior(this), START_BEHAVIOR);
-		behaviour.registerState(new GameInitBehavior(this), INIT_BEHAVIOR);
+		behaviour.registerFirstState(new GameInitBehavior(this), INIT_BEHAVIOR);
 		behaviour.registerState(new GameBehavior(this), GAME_BEHAVIOR);
 		behaviour.registerLastState(new GameEndBehavior(this), END_BEHAVIOR);
 
 		// Transitions
-		// Default transition from START_BEHAVIOR to INIT_BEHAVIOR
-		behaviour.registerDefaultTransition(START_BEHAVIOR, INIT_BEHAVIOR);
 		// Default transition from INIT_BEHAVIOR to GAME_BEHAVIOR
 		behaviour.registerDefaultTransition(INIT_BEHAVIOR, GAME_BEHAVIOR);
 		// If onEnd() method of behavior corresponding to state GAME_BEHAVIOR returns 1, 
@@ -72,17 +67,26 @@ public class AgentGuesser extends Agent {
 	}
 	
 	/**
-     * Reads words from words.txt and pre-processes them, filtering out words of the same length as the secret word.
+	 * Initializes game-related information.
+	 */
+	public void initGuesserVariables(int wordLength) {
+		setWordLength(wordLength);
+		setGuessProgress("_".repeat(this.getWordLength()));
+		preprocessWords();
+	}
+	
+	/**
+     * Reads words from 20k_words.txt and pre-processes them, filtering out words of the same length as the secret word.
      */
 	public void preprocessWords() {
-		words = new ArrayList<>();
+		dictionary = new ArrayList<>();
 		usedLetters = new ArrayList<>();
 		
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
             	if(line.trim().length() == wordLength)
-                	words.add(line.trim());
+                	dictionary.add(line.trim());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,11 +98,11 @@ public class AgentGuesser extends Agent {
      *
      * @return The filtered list of words.
      */
-	public ArrayList<String> filterWords() {
+	public ArrayList<String> filterDictionary() {
         ArrayList<String> filteredWords = new ArrayList<>();
 
         // Adds a word only if its structure matches that of guessProgress.
-        for (String word : words) {
+        for (String word : dictionary) {
     		if(!word.contains(String.valueOf(wrongLetter))) {
 	        	boolean isMatch = true;
 	            for (int i = 0; i < guessProgress.length(); i++) {
@@ -126,7 +130,7 @@ public class AgentGuesser extends Agent {
         
         // Iterate over each word in the list of words and count the occurrences of each letter,
         // updating the count for each letter if it hasn't been used before.
-        for (String word : words) {
+        for (String word : dictionary) {
             for (char letter : word.toCharArray()) {
             	if(!usedLetters.contains(letter))
             		letterCount.put(letter, letterCount.getOrDefault(letter, 0) + 1);
@@ -151,7 +155,7 @@ public class AgentGuesser extends Agent {
 	 * 
 	 * @return The generated word or letter as a String.
 	 */
-	public String guess() {
+	public String guessLetter() {
 		
 		// If no letters have been guessed yet, we cannot filter words,
 	    // so we simply choose the next most frequent letter in the English language.
@@ -161,14 +165,14 @@ public class AgentGuesser extends Agent {
 		}
 		
 		// filter the words based on the last guessed letter.
-		words = filterWords(); // filter based on the new letter find or the new wrong letter.
-		System.out.println("Compatible word(s): " + words);
+		dictionary = filterDictionary(); // filter based on the new letter find or the new wrong letter.
+		System.out.println("Compatible word(s): " + dictionary);
 				
 		// If a letter has been guessed and the game is in progress
 		// and the word list is sufficiently filtered, return the only possible word.
-		if(status == 1 && words.size() == 1)
-			if(words.size() == 1)
-				return words.get(0);
+		if(status == 1 && dictionary.size() == 1)
+			if(dictionary.size() == 1)
+				return dictionary.get(0);
 		
 		// Return the most frequent letter among the ones we have never picked.
 		return String.valueOf(findMostFrequentLetter());

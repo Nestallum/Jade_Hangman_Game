@@ -38,16 +38,16 @@ public class AgentProvider extends Agent {
 	private String guessProgress;
 	private static final String FILE_PATH = "20k_words.txt";
     private static final Random random = new Random();
-    private static List<String> words;
+    private static List<String> dictionary;
     
     // Loading words from text file
     static {
-    	words = new ArrayList<>();
+    	dictionary = new ArrayList<>();
     	
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                words.add(line.trim());
+                dictionary.add(line.trim());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,15 +73,20 @@ public class AgentProvider extends Agent {
 	/**
 	 * Generates the secret word for the Hangman game and initializes game-related information.
 	 */
-	public void initGame() {
-		int index = random.nextInt(words.size());
-		setSecretWord(words.get(index));
+	public void initProviderVariables() {
+		generateWord();
+		secretWord = getSecretWord();
 		setWordLength(secretWord.length());
 		setGuessProgress("_".repeat(secretWord.length()));
 		System.out.println(getLocalName() + " : Secret word: " + secretWord + " (not visible by AgentGuesser)");
 		int distinct_letters = (int) secretWord.chars().distinct().count();
 		setNbTrials((int) (Math.ceil(distinct_letters*1.2)));
 		System.out.println(getLocalName() + " : Number of Trials: " + nbTrials);
+	}
+	
+	public void generateWord() {
+		int index = random.nextInt(dictionary.size());
+		setSecretWord(dictionary.get(index));
 	}
 
 	/**

@@ -4,8 +4,6 @@ import agents.AgentProvider;
 import agents.AgentGuesser;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
-import tools.AgentLogger;
-
 /**
  * Behavior class responsible for initializing the game parameters and communicating with the AgentGuesser.
  *
@@ -27,13 +25,9 @@ public class GameInitBehavior extends OneShotBehaviour {
 	}
 
 	public void action() {
-		// Wait for a message from AgentGuesser to start the game
-		agent.doWait();
-		ACLMessage message = agent.receive();
-		AgentLogger.logACLMessage(message);
-
+		
 		// Initialize game parameters for agent Provider
-		agent.initGame();
+		agent.initProviderVariables();
 
 		// Send the secret word length to AgentGuesser
 		ACLMessage response = new ACLMessage(ACLMessage.INFORM);

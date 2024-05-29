@@ -29,7 +29,7 @@ public class GameBehavior extends OneShotBehaviour {
 
 	public void action() {
 		// Send the guess to the AgentProvider 
-		String guess = agent.guess();
+		String guess = agent.guessLetter();
 		ACLMessage message = new ACLMessage(ACLMessage.PROPOSE);
 		message.setContent(guess);
 		message.addReceiver(AgentProvider.ID);
