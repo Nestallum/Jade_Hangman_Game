@@ -80,7 +80,7 @@ public class AgentProvider extends Agent {
 		setGuessProgress("_".repeat(secretWord.length()));
 		System.out.println(getLocalName() + " : Secret word: " + secretWord + " (not visible by AgentGuesser)");
 		int distinct_letters = (int) secretWord.chars().distinct().count();
-		setNbTrials((int) (Math.ceil(distinct_letters*1.2)));
+		setNbTrials(distinct_letters);
 		System.out.println(getLocalName() + " : Number of Trials: " + nbTrials);
 	}
 	
@@ -107,7 +107,6 @@ public class AgentProvider extends Agent {
 		
 		// Else, it's a letter
 		char letter = guess.charAt(0);
-	    nbTrials--;
 	    
 	    // Check if the secret word contains the guessed letter
 	    if (secretWord.contains(String.valueOf(letter))) {
@@ -123,6 +122,7 @@ public class AgentProvider extends Agent {
 	    	return new TrialResult(0, guessProgress);
 	    
 	    // Guessed letter is not present in the secret word
+	    nbTrials--;
 	    return new TrialResult(-1, guessProgress);
 	}
 	
